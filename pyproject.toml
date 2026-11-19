@@ -22,7 +22,7 @@ dev = [
 ]
 
 [tool.setuptools.packages.find]
-include = ["edge*", "cloud*", "tools*"]
+include = ["edge*", "cloud*", "tools*", "packages*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

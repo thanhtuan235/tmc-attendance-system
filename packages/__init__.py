@@ -1,0 +1,1 @@
+"""Gói dùng chung giữa các component (Hình 4.26: packages/contracts)."""
