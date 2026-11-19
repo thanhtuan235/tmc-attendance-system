@@ -16,9 +16,9 @@
 /tools/fake_mobile.py                                    dxsondangdung2019-arch
 
 # T3 - Snapshot & Cloud
-/edge/**/snapshot_*.py                                   @T3-username
-/cloud/                                                  @T3-username
-/tools/fake_cmp02.py                                     @T3-username
+# /edge/**/snapshot_*.py                                   @T3-username
+# /cloud/                                                  @T3-username
+# /tools/fake_cmp02.py                                     @T3-username
 
 # T4 - Dữ liệu Edge
 /edge/**/sqlite_outbox.py                                vyhuynhnguyenvy16
