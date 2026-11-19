@@ -16,9 +16,9 @@
 /tools/fake_mobile.py                                    @dxsondangdung2019-arch
 
 # T3 - Snapshot & Cloud
-/edge/**/snapshot_*.py                                   phuvi301@gmail.com
-/cloud/                                                  phuvi301@gmail.com
-/tools/fake_cmp02.py                                     phuvi301@gmail.com
+/edge/**/snapshot_*.py                                   @phuvi301
+/cloud/                                                  @phuvi301
+/tools/fake_cmp02.py                                     @phuvi301
 
 # T4 - Dữ liệu Edge
 /edge/**/sqlite_outbox.py                                @vyhuynhnguyenvy16
