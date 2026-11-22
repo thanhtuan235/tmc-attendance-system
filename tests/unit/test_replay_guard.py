@@ -1,11 +1,23 @@
 from concurrent.futures import ThreadPoolExecutor
+import base64
+import json
 from datetime import datetime, timedelta, timezone
 
+from cryptography.hazmat.primitives import hashes, serialization
+from cryptography.hazmat.primitives.asymmetric import ec
+
+from edge.cmp01_kiosk_control.adapters.device_bound_qr_verifier import (
+    DeviceBoundQrVerifier,
+)
 from edge.cmp01_kiosk_control.adapters.replay_guard import (
     ReplayFloorPolicy,
     ReplayGuard,
 )
-from edge.cmp01_kiosk_control.ports.dto import ReasonCode
+from edge.cmp01_kiosk_control.ports.dto import (
+    DeviceEntry,
+    DeviceKeySnapshot,
+    ReasonCode,
+)
 
 
 def test_new_device_valid_sequence_is_accepted():
@@ -108,3 +120,64 @@ def test_floor_policy_supports_edge_restart_timestamp():
     policy.set_floor(edge_start)
 
     assert policy.replay_floor_datetime == edge_start
+
+
+def test_tampered_signature_does_not_change_watermark():
+    now = datetime(2026, 1, 1, 12, 0, tzinfo=timezone.utc)
+    did = "device_test"
+    private_key = ec.generate_private_key(ec.SECP256R1())
+    public_pem = private_key.public_key().public_bytes(
+        serialization.Encoding.PEM,
+        serialization.PublicFormat.SubjectPublicKeyInfo,
+    ).decode("ascii")
+    snapshot = DeviceKeySnapshot(
+        version=1,
+        issued_at=now,
+        signing_kid="cmp02-test",
+        devices=(DeviceEntry(did, "employee_test", public_pem, "ACTIVE"),),
+        revoked_employees=frozenset(),
+        sig=b"snapshot-signature",
+    )
+    iat = int(now.timestamp())
+    seq = 105
+    canonical = f"1|{did}|{iat}|{seq}".encode("utf-8")
+    signature = bytearray(
+        private_key.sign(canonical, ec.ECDSA(hashes.SHA256()))
+    )
+    payload = {
+        "v": 1,
+        "did": did,
+        "iat": iat,
+        "seq": seq,
+        "sig": base64.b64encode(bytes(signature)).decode("ascii"),
+    }
+    raw_qr = base64.b64encode(
+        json.dumps(payload, separators=(",", ":")).encode("utf-8")
+    )
+
+    verifier = DeviceBoundQrVerifier(clock=type(
+        "FakeClock",
+        (),
+        {"now": lambda self: now},
+    )())
+    replay_guard = ReplayGuard()
+
+    decoded = verifier.decode(raw_qr)
+    valid_result = verifier.verify(decoded, snapshot, now)
+    assert valid_result.ok
+
+    replay_guard.commit(did, seq)
+    watermark_before = replay_guard.get_watermark(did)
+
+    signature[-1] ^= 0x01
+    payload["sig"] = base64.b64encode(bytes(signature)).decode("ascii")
+    tampered_qr = base64.b64encode(
+        json.dumps(payload, separators=(",", ":")).encode("utf-8")
+    )
+    tampered = verifier.decode(tampered_qr)
+    tampered_result = verifier.verify(tampered, snapshot, now)
+
+    watermark_after = replay_guard.get_watermark(did)
+
+    assert tampered_result.reason_code == ReasonCode.BAD_SIGNATURE
+    assert watermark_before == watermark_after

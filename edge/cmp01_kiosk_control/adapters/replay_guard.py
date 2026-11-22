@@ -79,6 +79,11 @@ class ReplayGuard(IReplayGuard):
     def replay_floor(self) -> Optional[int]:
         return self.replay_floor_policy.replay_floor
 
+    def get_watermark(self, did: str) -> Optional[int]:
+        """Return the latest accepted sequence for did, if one exists."""
+        with self._lock:
+            return self.watermarks.get(did)
+
     def check(self, did: str, seq: int, iat: int) -> Optional[ReasonCode]:
         """Check replay rules without changing the watermark."""
         if not isinstance(did, str) or not did:
