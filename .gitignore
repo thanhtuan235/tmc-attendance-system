@@ -33,3 +33,6 @@ Thumbs.db
 
 # Edge runtime folder (db, demo keys)
 runtime-files/
+
+# Log khi chạy scripts/demo
+demo-logs/
