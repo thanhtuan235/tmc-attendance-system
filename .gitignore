@@ -30,3 +30,6 @@ snapshot.json
 .idea/
 .DS_Store
 Thumbs.db
+
+# Edge runtime folder (db, demo keys)
+runtime-files/
