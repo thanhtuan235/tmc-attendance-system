@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+
+# Môi trường ảo
+.venv/
+venv/
+.env
+
+# Dữ liệu runtime (outbox, cache, CMP-03 mini)
+*.db
+*.db-wal
+*.db-shm
+*.sqlite
+
+# Khóa riêng - KHÔNG commit (khóa công khai *_pub.pem thì được)
+*.pem
+!*_pub.pem
+tools/devices/
+
+# Snapshot sinh ra khi chạy demo
+snapshot.json
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Edge runtime folder (db, demo keys)
+runtime-files/
+
+# Log khi chạy scripts/demo
+demo-logs/

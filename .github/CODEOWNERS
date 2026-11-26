@@ -1,0 +1,28 @@
+# CODEOWNERS - người sở hữu từng phần code; PR chạm file nào sẽ tự yêu cầu người đó duyệt.
+# Dòng sau ghi đè dòng trước, nên quy tắc mặc định đặt trên cùng.
+
+# Mặc định: T1 (Lead/Tích hợp) duyệt mọi thứ chưa có chủ
+*                                                        @thanhtuan235
+
+# T1 - hợp đồng chung, entry, orchestrator, test e2e
+/edge/cmp01_kiosk_control/ports/                         @thanhtuan235
+/edge/cmp01_kiosk_control/entry/                         @thanhtuan235
+/edge/cmp01_kiosk_control/orchestration/kiosk_gate_orchestrator.py  @thanhtuan235
+/tests/e2e/                                              @thanhtuan235
+
+# T2 - Xác minh QR
+/edge/**/device_bound_qr_verifier.py                     @dxsondangdung2019-arch
+/edge/**/replay_guard.py                                 @dxsondangdung2019-arch
+/tools/fake_mobile.py                                    @dxsondangdung2019-arch
+
+# T3 - Snapshot & Cloud
+/edge/**/snapshot_*.py                                   @phuvi301
+/cloud/                                                  @phuvi301
+/tools/fake_cmp02.py                                     @phuvi301
+
+# T4 - Dữ liệu Edge
+/edge/**/sqlite_outbox.py                                @vyhuynhnguyenvy16
+/edge/**/*turnstile*                                     @vyhuynhnguyenvy16
+/edge/cmp01_kiosk_control/orchestration/sync_agent.py    @vyhuynhnguyenvy16
+/edge/cmp01_kiosk_control/orchestration/recovery.py      @vyhuynhnguyenvy16
+/edge/**/http_cloud_client.py                            @vyhuynhnguyenvy16

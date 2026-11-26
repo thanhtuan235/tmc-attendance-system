@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [dev, main]
+  push:
+    branches: [dev, main]
+
+jobs:
+  pytest:
+    name: pytest            # Tên này phải trùng status check bắt buộc trong branch protection
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+
+      - name: Unit tests
+        run: pytest -q tests/unit
+
+      - name: E2E – 6 kịch bản trên server thật (T1-04)
+        run: pytest -q tests/e2e
+
+      - name: Demo script – tự kiểm 17 điểm (T2-05)
+        run: bash scripts/demo.sh --no-pause
+
+      - name: Upload log khi lỗi
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: demo-logs
+          path: demo-logs/
+          if-no-files-found: ignore
