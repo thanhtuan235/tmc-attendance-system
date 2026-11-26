@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "tmc-attendance-system"
-version = "0.1.0"
+version = "1.0.0"
 description = "TMC QR Attendance & Access Control - CMP-01 Kiosk Control (Edge) + CMP-03 mini (Cloud)"
 readme = "README.md"
 requires-python = ">=3.11"
